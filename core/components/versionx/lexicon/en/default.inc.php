@@ -56,3 +56,8 @@ $_lang['versionx.optimize_storage'] = 'Optimize Storage';
 $_lang['versionx.optimize_storage.confirm_text'] = 'Optimizing storage will merge older deltas, and typically runs each night, potentially reducing the size of the database.';
 $_lang['versionx.optimize_storage.confirm_text2'] = 'Are you sure you want to run it manually now?';
 $_lang['versionx.optimize_storage.successful'] = 'Optimization successful';
+
+// Dashboard widgets
+$_lang['versionx.widget.resources'] = 'Recent Resource Changes';
+$_lang['versionx.widget.resources.desc'] = '[VersionX] Shows a grid with the most recent resource changes for all users.';
+$_lang['versionx.widget.resources.update'] = 'Update Resource';

@@ -1,55 +1,55 @@
 <?php
 /* Get the core config */
-if (!file_exists(dirname(__DIR__).'/config.core.php')) {
-    die('ERROR: missing '.dirname(__DIR__).'/config.core.php file defining the MODX core path.');
+if (!file_exists(dirname(__DIR__) . '/config.core.php')) {
+    die('ERROR: missing ' . dirname(__DIR__) . '/config.core.php file defining the MODX core path.');
 }
 
 echo "<pre>";
 /* Boot up MODX */
 echo "Loading modX...\n";
-require_once dirname(__DIR__).'/config.core.php';
-require_once MODX_CORE_PATH.'model/modx/modx.class.php';
+require_once dirname(__DIR__) . '/config.core.php';
+require_once MODX_CORE_PATH . 'model/modx/modx.class.php';
 $modx = new modX();
 echo "Initializing manager...\n";
 $modx->initialize('mgr');
-$modx->getService('error','error.modError', '', '');
+$modx->getService('error', 'error.modError', '', '');
 
 $componentPath = dirname(__DIR__);
 
-$versionx = $modx->getService('versionx','VersionX', $componentPath.'/core/components/versionx/model/', array(
-    'versionx.core_path' => $componentPath.'/core/components/versionx/',
-));
+$versionx = $modx->getService('versionx', 'VersionX', $componentPath . '/core/components/versionx/model/', [
+    'versionx.core_path' => $componentPath . '/core/components/versionx/',
+]);
 
 
 /* Namespace */
-if (!createObject('modNamespace',array(
+if (!createObject('modNamespace', [
     'name' => 'versionx',
-    'path' => $componentPath.'/core/components/versionx/',
-    'assets_path' => $componentPath.'/assets/components/versionx/',
-),'name', true)) {
+    'path' => $componentPath . '/core/components/versionx/',
+    'assets_path' => $componentPath . '/assets/components/versionx/',
+], 'name', true)) {
     echo "Error creating namespace versionx.\n";
 }
 
 /* Path settings */
-if (!createObject('modSystemSetting', array(
+if (!createObject('modSystemSetting', [
     'key' => 'versionx.core_path',
-    'value' => $componentPath.'/core/components/versionx/',
+    'value' => $componentPath . '/core/components/versionx/',
     'xtype' => 'textfield',
     'namespace' => 'versionx',
     'area' => 'Paths',
     'editedon' => time(),
-), 'key', false)) {
+], 'key', false)) {
     echo "Error creating versionx.core_path setting.\n";
 }
 
-if (!createObject('modSystemSetting', array(
+if (!createObject('modSystemSetting', [
     'key' => 'versionx.assets_path',
-    'value' => $componentPath.'/assets/components/versionx/',
+    'value' => $componentPath . '/assets/components/versionx/',
     'xtype' => 'textfield',
     'namespace' => 'versionx',
     'area' => 'Paths',
     'editedon' => time(),
-), 'key', false)) {
+], 'key', false)) {
     echo "Error creating versionx.assets_path setting.\n";
 }
 
@@ -58,30 +58,30 @@ $url = 'http';
 if (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on')) {
     $url .= 's';
 }
-$url .= '://'.$_SERVER["SERVER_NAME"];
+$url .= '://' . $_SERVER["SERVER_NAME"];
 if ($_SERVER['SERVER_PORT'] != '80') {
-    $url .= ':'.$_SERVER['SERVER_PORT'];
+    $url .= ':' . $_SERVER['SERVER_PORT'];
 }
 $requestUri = $_SERVER['REQUEST_URI'];
 $bootstrapPos = strpos($requestUri, '_bootstrap/');
-$requestUri = rtrim(substr($requestUri, 0, $bootstrapPos), '/').'/';
+$requestUri = rtrim(substr($requestUri, 0, $bootstrapPos), '/') . '/';
 $assetsUrl = "{$url}{$requestUri}assets/components/versionx/";
 
-if (!createObject('modSystemSetting', array(
+if (!createObject('modSystemSetting', [
     'key' => 'versionx.assets_url',
     'value' => $assetsUrl,
     'xtype' => 'textfield',
     'namespace' => 'versionx',
     'area' => 'Paths',
     'editedon' => time(),
-), 'key', false)) {
+], 'key', false)) {
     echo "Error creating versionx.assets_url setting.\n";
 }
-if (!createObject('modPlugin', array(
+if (!createObject('modPlugin', [
     'name' => 'VersionX',
     'static' => true,
-    'static_file' => $componentPath.'/core/components/versionx/elements/plugins/versionx.plugin.php',
-), 'name', true)) {
+    'static_file' => $componentPath . '/core/components/versionx/elements/plugins/versionx.plugin.php',
+], 'name', true)) {
     echo "Error creating VersionX Plugin.\n";
 }
 $vcPlugin = $modx->getObject('modPlugin', ['name' => 'VersionX']);
@@ -103,27 +103,27 @@ if ($vcPlugin) {
         'OnPluginFormPrerender',
     ];
     foreach ($events as $event) {
-        if (!createObject('modPluginEvent', array(
+        if (!createObject('modPluginEvent', [
             'pluginid' => $vcPlugin->get('id'),
             'event' => $event,
             'priority' => 0,
-        ), array('pluginid', 'event'), false)) {
+        ], ['pluginid', 'event'], false)) {
             echo "Error creating modPluginEvent {$event}.\n";
         }
     }
 }
 
-if (!createObject('modMenu', array(
+if (!createObject('modMenu', [
     'text' => 'versionx',
     'parent' => 'components',
     'description' => 'versionx.menu_desc',
     'action' => 'index',
     'namespace' => 'versionx',
-), 'text', true)) {
+], 'text', true)) {
     echo "Error creating menu.\n";
 }
 
-$settings = include dirname(__DIR__).'/_build/data/settings.php';
+$settings = include $componentPath . '/_build/data/settings.php';
 foreach ($settings as $key => $opts) {
     $val = $opts['value'];
 
@@ -139,7 +139,19 @@ foreach ($settings as $key => $opts) {
         'namespace' => 'versionx',
         'area' => $opts['area'],
     ], 'key', false)) {
-        echo "Error creating versionx.".$key." setting.\n";
+        echo "Error creating versionx." . $key . " setting.\n";
+    }
+}
+
+// Widgets
+$widgets = include $componentPath . '/_build/data/transport.dashboardwidgets.php';
+if (empty($widgets))  {
+    $modx->log(modX::LOG_LEVEL_ERROR, 'Could not create widgets.');
+}
+foreach ($widgets as $key => $obj) {
+    /** @var modDashboardWidget $obj */
+    if (!createObject(modDashboardWidget::class, $obj->toArray(), 'name', false)) {
+        echo "Error creating " . $obj->get('name') . " widget.\n";
     }
 }
 
@@ -179,7 +191,8 @@ $modx->cacheManager->refresh();
  * @param bool $update
  * @return bool
  */
-function createObject ($className = '', array $data = array(), $primaryField = '', $update = true) {
+function createObject($className = '', array $data = [], $primaryField = '', $update = true)
+{
     global $modx;
     /* @var xPDOObject $object */
     $object = null;
@@ -187,13 +200,12 @@ function createObject ($className = '', array $data = array(), $primaryField = '
     /* Attempt to get the existing object */
     if (!empty($primaryField)) {
         if (is_array($primaryField)) {
-            $condition = array();
+            $condition = [];
             foreach ($primaryField as $key) {
                 $condition[$key] = $data[$key];
             }
-        }
-        else {
-            $condition = array($primaryField => $data[$primaryField]);
+        } else {
+            $condition = [$primaryField => $data[$primaryField]];
         }
         $object = $modx->getObject($className, $condition);
         if ($object instanceof $className) {

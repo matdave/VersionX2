@@ -25,42 +25,8 @@ VersionX.grid.Objects = function(config) {
         remoteSort: true,
         actionsColumnWidth: 5,
         filters: ['query', 'date_from', 'date_to', 'class', 'editor', 'package'],
-        columns: [{
-            header: _('versionx.objects.delta'),
-            dataIndex: 'id',
-            hidden: true
-        },{
-            header: _('versionx.objects.when'),
-            dataIndex: 'time_end',
-            width: 20,
-            sortable: true,
-        },{
-            header: _('versionx.objects.name'),
-            dataIndex: 'name',
-            width: 20,
-            sortable: true,
-        },{
-            header: _('versionx.objects.class'),
-            dataIndex: 'principal_class',
-            width: 20,
-            sortable: true,
-        },{
-            header: _('versionx.objects.id'),
-            dataIndex: 'principal',
-            width: 10,
-            sortable: true,
-        },{
-            header: _('versionx.objects.package'),
-            dataIndex: 'principal_package',
-            width: 10,
-            sortable: true,
-        },{
-            header: _('versionx.objects.editor'),
-            dataIndex: 'username',
-            width: 20,
-            sortable: true,
-        }]
-        ,tbar: [{
+        columns: this.getColumns(),
+        tbar: [{
             xtype: 'versionx-field-search',
             emptyText: _('versionx.filters.search_by_name'),
             grid: this,
@@ -127,6 +93,43 @@ VersionX.grid.Objects = function(config) {
     this.config = config;
 };
 Ext.extend(VersionX.grid.Objects, MODx.grid.Grid, {
+    getColumns: function() {
+        return [{
+            header: _('versionx.objects.delta'),
+            dataIndex: 'id',
+            hidden: true
+        },{
+            header: _('versionx.objects.when'),
+            dataIndex: 'time_end',
+            width: 20,
+            sortable: true,
+        },{
+            header: _('versionx.objects.name'),
+            dataIndex: 'name',
+            width: 20,
+            sortable: true,
+        },{
+            header: _('versionx.objects.class'),
+            dataIndex: 'principal_class',
+            width: 20,
+            sortable: true,
+        },{
+            header: _('versionx.objects.id'),
+            dataIndex: 'principal',
+            width: 10,
+            sortable: true,
+        },{
+            header: _('versionx.objects.package'),
+            dataIndex: 'principal_package',
+            width: 10,
+            sortable: true,
+        },{
+            header: _('versionx.objects.editor'),
+            dataIndex: 'username',
+            width: 20,
+            sortable: true,
+        }];
+    },
     filter: function (tf, nv, ov) {
         var value = tf.getValue();
         if (tf.xtype === 'datefield' && typeof value === 'object') {
