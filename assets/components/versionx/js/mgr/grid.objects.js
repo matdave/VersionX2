@@ -91,6 +91,9 @@ VersionX.grid.Objects = function(config) {
     });
     VersionX.grid.Objects.superclass.constructor.call(this,config);
     this.config = config;
+    this.getView().getRowClass = function(record, index, rowParams, store) {
+        return 'versionx-row';
+    };
 };
 Ext.extend(VersionX.grid.Objects, MODx.grid.Grid, {
     getColumns: function() {
@@ -101,13 +104,15 @@ Ext.extend(VersionX.grid.Objects, MODx.grid.Grid, {
         },{
             header: _('versionx.objects.when'),
             dataIndex: 'time_end',
-            width: 20,
+            width: 15,
             sortable: true,
+            renderer: this.renderWhen
         },{
             header: _('versionx.objects.name'),
             dataIndex: 'name',
             width: 20,
             sortable: true,
+            renderer: this.renderName
         },{
             header: _('versionx.objects.class'),
             dataIndex: 'principal_class',
@@ -169,5 +174,12 @@ Ext.extend(VersionX.grid.Objects, MODx.grid.Grid, {
         });
         this.viewDetailsWindow.show(e.target);
     },
+    renderWhen: function(v, m, r) {
+        let bits = v.split(' ');
+        return `<div class="versionx-when-col"><div>${bits[0]}</div><span>${bits[1]}</span></div>`;
+    },
+    renderName: function(v, m, r) {
+        return `<div class="versionx-grid-name">${v}</div>`;
+    }
 });
 Ext.reg('versionx-grid-objects', VersionX.grid.Objects);

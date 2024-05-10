@@ -12,12 +12,11 @@ VersionX.grid.ResourcesWidget = function(config) {
             afterrender: this.onAfterRender,
             scope: this
         },
-        showActionsColumn: false,
+        actionsColumnWidth: 10,
         paging: false,
         pageSize: 10,
     });
     VersionX.grid.ResourcesWidget.superclass.constructor.call(this,config);
-    this.on('after')
 };
 Ext.extend(VersionX.grid.ResourcesWidget, VersionX.grid.Objects, {
     getColumns: function() {

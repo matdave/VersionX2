@@ -381,3 +381,19 @@
 .diff-wrapper.diff.diff-html .change del {
     background: #ffc0c0;/*#f09494;*/
 }
+
+/* Objects grid */
+.versionx-when-col {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.versionx-when-col span {
+    opacity: .5;
+}
+.versionx-row .x-grid3-col {
+    vertical-align: middle;
+}
+.versionx-grid-name {
+    font-weight: 500;
+}
