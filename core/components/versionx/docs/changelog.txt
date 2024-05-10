@@ -1,3 +1,10 @@
+VersionX 3.1.0-pl
+-----------------
+Released on 2024-05-10
+
+- Add dashboard widget that displays recent resource updates
+- Small visual tweaks to the objects grid
+
 VersionX 3.0.1-pl
 -----------------
 Released on 2024-03-07
