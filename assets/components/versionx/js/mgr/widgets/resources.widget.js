@@ -1,23 +1,23 @@
 VersionX.grid.ResourcesWidget = function(config) {
-    this.config = config || {};
-    Ext.applyIf(this.config, {
+    config = config || {};
+    Ext.applyIf(config, {
         id: 'versionx-grid-resources-widget',
         baseParams: {
             action: 'mgr/objects/getlist',
             class: 'modResource',
         },
-        params: [],
-        viewConfig: {
-            forceFit: true,
-            enableRowBody: true,
-            emptyText: _('versionx.error.noresults')
-        },
         tbar: [],
         columns: this.getColumns(),
-
-
+        listeners: {
+            afterrender: this.onAfterRender,
+            scope: this
+        },
+        showActionsColumn: false,
+        paging: false,
+        pageSize: 10,
     });
     VersionX.grid.ResourcesWidget.superclass.constructor.call(this,config);
+    this.on('after')
 };
 Ext.extend(VersionX.grid.ResourcesWidget, VersionX.grid.Objects, {
     getColumns: function() {
@@ -31,6 +31,18 @@ Ext.extend(VersionX.grid.ResourcesWidget, VersionX.grid.Objects, {
         });
 
         return newColumns;
+    },
+    // Workaround to resize the grid when in a dashboard widget
+    onAfterRender: function() {
+    var cnt = Ext.getCmp('modx-content')
+        // Dashboard widget "parent" (renderTo)
+        ,parent = Ext.get('versionx-widget-resource-div');
+
+    if (cnt && parent) {
+        cnt.on('afterlayout', function(elem, layout) {
+            this.setWidth(parent.getWidth());
+        }, this);
     }
+}
 });
 Ext.reg('versionx-grid-resources-widget', VersionX.grid.ResourcesWidget);
