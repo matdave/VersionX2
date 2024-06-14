@@ -175,7 +175,7 @@ function createFields(vxDelta $delta, array $items, array $prevItems)
             continue;
         }
 
-        $beforeValue = !empty($prevItems) ? normalizeValue($prevItems[$key]) : '';
+        $beforeValue = !empty($prevItems) && !empty($prevItems[$key]) ? normalizeValue($prevItems[$key]) : '';
         $afterValue = normalizeValue($item);
 
         $diff = $versionX->deltas()::calculateDiff($beforeValue, $afterValue);
