@@ -31,6 +31,21 @@ Ext.extend(VersionX.grid.ResourcesWidget, VersionX.grid.Objects, {
 
         return newColumns;
     },
+    getMenu: function() {
+        var m = [];
+        m.push({
+            text: _('versionx.widget.resources.update'),
+            handler: this.updateResource
+        });
+        m.push({
+            text: _('versionx.objects.view_details'),
+            handler: this.viewDetails
+        });
+        return m;
+    },
+    updateResource: function() {
+        window.location = '?a=resource/update&id=' + this.menu.record.principal
+    },
     // Workaround to resize the grid when in a dashboard widget
     onAfterRender: function() {
     var cnt = Ext.getCmp('modx-content')
