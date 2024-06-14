@@ -15,7 +15,7 @@ $widgets[0]->fromArray([
     'name' => 'versionx.widget.resources',
     'description' => 'versionx.widget.resources.desc',
     'type' => 'file',
-    'size' => 'one-third',
+    'size' => 'half',
     'content' => $basePath . 'components/versionx/elements/widgets/resources.dashboardwidget.php',
     'namespace' => 'versionx',
     'lexicon' => 'versionx:default',
