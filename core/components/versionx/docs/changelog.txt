@@ -1,6 +1,6 @@
 VersionX 3.1.1-pl
 -----------------
-Released on 2024-
+Released on 2024-06-28
 
 - Fix dashboard widget default sizing in MODX 2.x [#133]
 - Ensure option exists to edit selected resource in dashboard widget [#132]
