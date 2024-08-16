@@ -1,3 +1,9 @@
+VersionX 3.1.2-pl
+-----------------
+Released on 2024-
+
+- Prevent initial delta being created by package resolver if created previously
+
 VersionX 3.1.1-pl
 -----------------
 Released on 2024-06-28

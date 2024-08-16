@@ -9,7 +9,12 @@ use modmore\VersionX\Types\Template;
 use modmore\VersionX\Types\TV;
 use modmore\VersionX\Types\Type;
 
-if (isset($object) && isset($object->xpdo)) {
+/**
+ * @var \modX|\MODX\Revolution\modX $modx
+ * @var \xPDOTransport|\xPDO\Transport\xPDOTransport $object
+ * @var array $options
+ */
+if (isset($object->xpdo)) {
     $modx = $object->xpdo;
 }
 if (!isset($modx)) {
@@ -36,27 +41,27 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 
         $modx->log(modX::LOG_LEVEL_INFO,'Starting snapshot process for selected objects...');
 
-        if (isset($options['vx_snapshot_resources']) && !empty($options['vx_snapshot_resources'])) {
+        if (!empty($options['vx_snapshot_resources'])) {
             createInitialDelta($versionX, modResource::class, new Resource($versionX), 'Resource');
         }
 
-        if (isset($options['vx_snapshot_templates']) && !empty($options['vx_snapshot_templates'])) {
+        if (!empty($options['vx_snapshot_templates'])) {
             createInitialDelta($versionX, modTemplate::class, new Template($versionX), 'Template');
         }
 
-        if (isset($options['vx_snapshot_chunks']) && !empty($options['vx_snapshot_chunks'])) {
+        if (!empty($options['vx_snapshot_chunks'])) {
             createInitialDelta($versionX, modChunk::class, new Chunk($versionX), 'Chunk');
         }
 
-        if (isset($options['vx_snapshot_snippets']) && !empty($options['vx_snapshot_snippets'])) {
+        if (!empty($options['vx_snapshot_snippets'])) {
             createInitialDelta($versionX, modSnippet::class, new Snippet($versionX), 'Snippet');
         }
 
-        if (isset($options['vx_snapshot_plugins']) && !empty($options['vx_snapshot_plugins'])) {
+        if (!empty($options['vx_snapshot_plugins'])) {
             createInitialDelta($versionX, modPlugin::class, new Plugin($versionX),'Plugin');
         }
 
-        if (isset($options['vx_snapshot_tmplvars']) && !empty($options['vx_snapshot_tmplvars'])) {
+        if (!empty($options['vx_snapshot_tmplvars'])) {
             createInitialDelta($versionX, modTemplateVar::class, new TV($versionX), 'TV');
         }
 
@@ -64,6 +69,9 @@ switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 }
 
 /**
+ * Attempts to create an initial delta for each object of the given type (resource, snippet etc.)
+ * If a delta already exists from a previous install, skip and continue.
+ *
  * @param VersionX $versionX
  * @param string $class
  * @param Type $type
@@ -74,16 +82,25 @@ function createInitialDelta(VersionX $versionX, string $class, Type $type, strin
 {
     global $modx;
 
-    $modx->log(modX::LOG_LEVEL_INFO,"Iterating over {$name}s and storing snapshots..");
+    $modx->log(modX::LOG_LEVEL_INFO,"Iterating over {$name}s and creating initial snapshots..");
 
     $count = 0;
     foreach ($modx->getIterator($class) as $object) {
-        if ($versionX->deltas()->createDelta($object->get('id'), $type)) {
-            $count++;
+        // Only create a delta if none currently exist for the given object
+        if (!$modx->getObject(vxDelta::class, [
+            'principal_package' => 'core',
+            'principal_class' => $class,
+            'principal' => $object->get('id'),
+        ])) {
+            // Create an initial delta for this object
+            if (!$versionX->deltas()->createDelta($object->get('id'), $type)) {
+                $modx->log(modX::LOG_LEVEL_WARN,"Error creating snapshot for {$name} {$object->get('id')}");
+                continue;
+            }
         }
-        else {
-            $modx->log(modX::LOG_LEVEL_WARN,"Error creating snapshot for {$name} {$object->get('id')}");
-        }
+
+        // Add to count if either we didn't encounter an error
+        $count++;
 
         if (is_int($count / 25)) {
             $modx->log(modX::LOG_LEVEL_INFO,"Checked {$count} {$name}s so far.");
