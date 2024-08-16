@@ -1,8 +1,8 @@
 VersionX 3.1.2-pl
 -----------------
-Released on 2024-
+Released on 2024-08-16
 
-- Prevent initial delta being created by package resolver if created previously
+- Prevent initial delta being created by package resolver if already created by a previous install [#136]
 
 VersionX 3.1.1-pl
 -----------------

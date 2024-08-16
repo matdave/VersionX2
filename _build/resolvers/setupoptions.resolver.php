@@ -82,7 +82,7 @@ function createInitialDelta(VersionX $versionX, string $class, Type $type, strin
 {
     global $modx;
 
-    $modx->log(modX::LOG_LEVEL_INFO,"Iterating over {$name}s and creating initial snapshots..");
+    $modx->log(modX::LOG_LEVEL_INFO,"Iterating over {$name}s and creating initial deltas..");
 
     $count = 0;
     foreach ($modx->getIterator($class) as $object) {
@@ -99,7 +99,7 @@ function createInitialDelta(VersionX $versionX, string $class, Type $type, strin
             }
         }
 
-        // Add to count if either we didn't encounter an error
+        // Add to count if a delta was created or one already exists
         $count++;
 
         if (is_int($count / 25)) {
