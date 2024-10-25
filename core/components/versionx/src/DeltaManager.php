@@ -8,7 +8,8 @@ use modmore\VersionX\Types\Type;
 use modmore\VersionX\Enums\RevertAction;
 use MODX\Revolution\modX;
 
-class DeltaManager {
+class DeltaManager
+{
     public VersionX $versionX;
     /** @var \modX|modX */
     public $modx;
@@ -117,13 +118,22 @@ class DeltaManager {
             $fieldType = $type->getFieldClass($field);
             $fieldTypeObj = new $fieldType($value);
 
-            //
-            $value = Utils::flattenArray($fieldTypeObj->getValue());
+            // Flatten any arrays and set the value as a string
+            $value = $fieldTypeObj->getValue();
+            $valueType = gettype($value);
+
+            if (is_array($value)) {
+                $value = serialize($value);
+            } else {
+                $value = (string)$value;
+            }
 
             // If a previous delta exists, get the "after" value. Otherwise, use a blank string.
             $prevValue = '';
+            $prevValueType = '';
             if ($prevDelta && isset($prevFields[$field])) {
                 $prevValue = $prevFields[$field]->get('after');
+                $prevValueType = $prevFields[$field]->get('after_type');
             }
 
             try {
@@ -139,6 +149,8 @@ class DeltaManager {
             $deltaField = $this->modx->newObject(\vxDeltaField::class, [
                 'field' => $field,
                 'field_type' => $fieldType,
+                'before_type' => $prevValueType,
+                'after_type' => $valueType !== 'string' ? $valueType : '',
                 'before' => $prevValue,
                 'after' => $value,
                 'diff' => $renderedDiff, // Not persisted. Kept on object until cached.

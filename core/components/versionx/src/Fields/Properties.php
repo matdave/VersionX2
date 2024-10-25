@@ -12,6 +12,7 @@ class Properties extends Field
     }
 
     /**
+     *
      * @param array $arrayField
      * @param string $name
      * @param array $fields
@@ -21,6 +22,10 @@ class Properties extends Field
     {
         $arrays = [];
         foreach ($arrayField as $field => $value) {
+            if (empty($name)) {
+                $fields[$field] = $value;
+                continue;
+            }
             if (is_numeric($field)) {
                 $fields[$name][$field] = $value;
                 continue;
@@ -47,15 +52,40 @@ class Properties extends Field
      */
     public static function revertPropertyValue(\vxDeltaField $field, &$data)
     {
+        if (!is_array($data)) {
+            return $data;
+        }
+
         $pieces = explode('.', $field->get('field'));
         $last = end($pieces);
         foreach ($pieces as $piece) {
-            if (!is_array($data) || !array_key_exists($piece, $data)) {
+            if (!array_key_exists($piece, $data)) {
                 continue;
             }
 
             if ($piece === $last) {
-                $data[$piece] = $field->get('before');
+//                $json = json_decode($field->get('before'), true);
+//                if (json_last_error() === JSON_ERROR_NONE) {
+//                    $data[$piece] = $json;
+//                }
+
+                $beforeValue = $field->get('before');
+                $beforeType = $field->get('before_type');
+
+                if ($beforeType === 'array') {
+                    // Unserialize if it's meant to be an array
+                    $unserialized = unserialize($beforeValue);
+                    $data[$piece] = $unserialized !== false ? $unserialized : $field->get('before');
+                }
+                else if (in_array($beforeType, ['boolean', 'bool', 'integer', 'int', 'float', 'double'])) {
+                    // Cast as the set type
+                    $data[$piece] = settype($beforeValue, $beforeType);
+                }
+                else {
+                    // If we're here treat as a string
+                    $data[$piece] = $field->get('before');
+                }
+
             }
             else {
                 $data = &$data[$piece];
