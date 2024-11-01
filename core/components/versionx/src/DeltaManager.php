@@ -4,6 +4,7 @@ namespace modmore\VersionX;
 
 use Carbon\Carbon;
 use Jfcherng\Diff\DiffHelper;
+use modmore\VersionX\Fields\Field;
 use modmore\VersionX\Types\Type;
 use modmore\VersionX\Enums\RevertAction;
 use MODX\Revolution\modX;
@@ -30,7 +31,6 @@ class DeltaManager
         // show the (table) header
         'showHeader' => false,
     ];
-
 
     function __construct(VersionX $versionX)
     {
@@ -118,12 +118,16 @@ class DeltaManager
             $fieldType = $type->getFieldClass($field);
             $fieldTypeObj = new $fieldType($value);
 
-            // Flatten any arrays and set the value as a string
+            // Get the value and the value type
             $value = $fieldTypeObj->getValue();
             $valueType = gettype($value);
+            // If the value is not an accepted type, default to string
+            if (!in_array(strtolower($valueType), Field::ACCEPTED_VALUE_TYPES)) {
+                $valueType = '';
+            }
 
-            if (is_array($value)) {
-                $value = serialize($value);
+            if (is_array($value) || is_object($value)) {
+                $value = json_encode($value);
             } else {
                 $value = (string)$value;
             }
@@ -150,7 +154,7 @@ class DeltaManager
                 'field' => $field,
                 'field_type' => $fieldType,
                 'before_type' => $prevValueType,
-                'after_type' => $valueType !== 'string' ? $valueType : '',
+                'after_type' => $valueType,
                 'before' => $prevValue,
                 'after' => $value,
                 'diff' => $renderedDiff, // Not persisted. Kept on object until cached.

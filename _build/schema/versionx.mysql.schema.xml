@@ -101,8 +101,8 @@
             Keep track of the before and after value types so reverting doesn't decode an intended json string,
             or cast an int as a string etc. Empty value means it's a string.
         -->
-        <field key="before_type" dbtype="varchar" precision="20" phptype="string" null="false" default="" />
-        <field key="after_type" dbtype="varchar" precision="20" phptype="string" null="false" default="" />
+        <field key="before_type" dbtype="varchar" precision="7" phptype="string" null="false" default="" />
+        <field key="after_type" dbtype="varchar" precision="7" phptype="string" null="false" default="" />
 
         <field key="before" dbtype="mediumtext" phptype="string" null="false" default="" />
         <field key="after" dbtype="mediumtext" phptype="string" null="false" default="" />

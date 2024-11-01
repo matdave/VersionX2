@@ -68,7 +68,7 @@ $xpdo_meta_map['vxDeltaField']= array (
     'before_type' => 
     array (
       'dbtype' => 'varchar',
-      'precision' => '20',
+      'precision' => '7',
       'phptype' => 'string',
       'null' => false,
       'default' => '',
@@ -76,7 +76,7 @@ $xpdo_meta_map['vxDeltaField']= array (
     'after_type' => 
     array (
       'dbtype' => 'varchar',
-      'precision' => '20',
+      'precision' => '7',
       'phptype' => 'string',
       'null' => false,
       'default' => '',

@@ -63,21 +63,17 @@ class Properties extends Field
                 continue;
             }
 
+            // The last 'piece' will be the key we're after.
             if ($piece === $last) {
-//                $json = json_decode($field->get('before'), true);
-//                if (json_last_error() === JSON_ERROR_NONE) {
-//                    $data[$piece] = $json;
-//                }
-
                 $beforeValue = $field->get('before');
                 $beforeType = $field->get('before_type');
 
-                if ($beforeType === 'array') {
-                    // Unserialize if it's meant to be an array
-                    $unserialized = unserialize($beforeValue);
-                    $data[$piece] = $unserialized !== false ? $unserialized : $field->get('before');
+                if (in_array($beforeType, ['array', 'object'])) {
+                    // Decode if it's meant to be an array/object
+                    $decoded = json_decode($beforeValue, true);
+                    $data[$piece] = $decoded ?: $field->get('before');
                 }
-                else if (in_array($beforeType, ['boolean', 'bool', 'integer', 'int', 'float', 'double'])) {
+                else if (in_array(strtolower($beforeType), self::ACCEPTED_VALUE_TYPES)) {
                     // Cast as the set type
                     $data[$piece] = settype($beforeValue, $beforeType);
                 }
