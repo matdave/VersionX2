@@ -221,7 +221,7 @@ function mergeTVs($object): array
     }
 
     return array_merge(
-        $object->get('fields'),
+        !empty($object->get('fields')) ? $object->get('fields') : [],
         ['content' => $object->get('content')],
         $tvs,
     );
