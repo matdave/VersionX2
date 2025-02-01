@@ -12,6 +12,7 @@ class Properties extends Field
     }
 
     /**
+     *
      * @param array $arrayField
      * @param string $name
      * @param array $fields
@@ -21,6 +22,10 @@ class Properties extends Field
     {
         $arrays = [];
         foreach ($arrayField as $field => $value) {
+            if (empty($name)) {
+                $fields[$field] = $value;
+                continue;
+            }
             if (is_numeric($field)) {
                 $fields[$name][$field] = $value;
                 continue;
@@ -47,15 +52,36 @@ class Properties extends Field
      */
     public static function revertPropertyValue(\vxDeltaField $field, &$data)
     {
+        if (!is_array($data)) {
+            return $data;
+        }
+
         $pieces = explode('.', $field->get('field'));
         $last = end($pieces);
         foreach ($pieces as $piece) {
-            if (!is_array($data) || !array_key_exists($piece, $data)) {
+            if (!array_key_exists($piece, $data)) {
                 continue;
             }
 
+            // The last 'piece' will be the key we're after.
             if ($piece === $last) {
-                $data[$piece] = $field->get('before');
+                $beforeValue = $field->get('before');
+                $beforeType = $field->get('before_type');
+
+                if (in_array($beforeType, ['array', 'object'])) {
+                    // Decode if it's meant to be an array/object
+                    $decoded = json_decode($beforeValue, true);
+                    $data[$piece] = $decoded ?: $field->get('before');
+                }
+                else if (in_array(strtolower($beforeType), self::ACCEPTED_VALUE_TYPES)) {
+                    // Cast as the set type
+                    $data[$piece] = settype($beforeValue, $beforeType);
+                }
+                else {
+                    // If we're here treat as a string
+                    $data[$piece] = $field->get('before');
+                }
+
             }
             else {
                 $data = &$data[$piece];

@@ -2,8 +2,8 @@
 
 namespace modmore\VersionX;
 
-class Utils {
-
+class Utils
+{
     /**
      * Flattens an array recursively, and returns other values as a string
      * @param mixed $array
@@ -12,7 +12,9 @@ class Utils {
      */
     public static function flattenArray($array = []): string
     {
-        if (!is_array($array)) return (string)$array;
+        if (!is_array($array)) {
+            return (string)$array;
+        }
 
         $string = [];
         foreach ($array as $key => $value) {

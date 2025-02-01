@@ -184,7 +184,7 @@ abstract class Type
     }
 
     /**
-     * Runs before object being reverted is saved.
+     * Runs after main object revert, and before the object is saved.
      * @param string $action - 'all', 'delta', or 'single'
      * @param array $fields - the delta fields that are being saved to the object
      * @param \xPDOObject $object - the object being reverted
@@ -287,7 +287,7 @@ abstract class Type
             ) {
                 // Take current properties field value and insert the "before" version at matching array keys.
                 $data = $object->get($propField);
-                Properties::revertPropertyValue($field, $data, 'before');
+                Properties::revertPropertyValue($field, $data);
                 $object->set($propField, $data);
                 $object->save();
             }

@@ -12,6 +12,18 @@ abstract class Field
     protected array $options = [];
     protected string $tpl = '';
 
+    public const ACCEPTED_VALUE_TYPES = [
+        'array',
+        'object',
+        'boolean',
+        'bool',
+        'integer',
+        'int',
+        'float',
+        'double',
+        'null'
+    ];
+
     function __construct($value, $name = '', $options = [])
     {
         if (!$this->value) {

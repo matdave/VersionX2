@@ -4,11 +4,13 @@ namespace modmore\VersionX;
 
 use Carbon\Carbon;
 use Jfcherng\Diff\DiffHelper;
+use modmore\VersionX\Fields\Field;
 use modmore\VersionX\Types\Type;
 use modmore\VersionX\Enums\RevertAction;
 use MODX\Revolution\modX;
 
-class DeltaManager {
+class DeltaManager
+{
     public VersionX $versionX;
     /** @var \modX|modX */
     public $modx;
@@ -29,7 +31,6 @@ class DeltaManager {
         // show the (table) header
         'showHeader' => false,
     ];
-
 
     function __construct(VersionX $versionX)
     {
@@ -117,13 +118,26 @@ class DeltaManager {
             $fieldType = $type->getFieldClass($field);
             $fieldTypeObj = new $fieldType($value);
 
-            //
-            $value = Utils::flattenArray($fieldTypeObj->getValue());
+            // Get the value and the value type
+            $value = $fieldTypeObj->getValue();
+            $valueType = gettype($value);
+            // If the value is not an accepted type, default to string
+            if (!in_array(strtolower($valueType), Field::ACCEPTED_VALUE_TYPES)) {
+                $valueType = '';
+            }
+
+            if (is_array($value) || is_object($value)) {
+                $value = json_encode($value);
+            } else {
+                $value = (string)$value;
+            }
 
             // If a previous delta exists, get the "after" value. Otherwise, use a blank string.
             $prevValue = '';
+            $prevValueType = '';
             if ($prevDelta && isset($prevFields[$field])) {
                 $prevValue = $prevFields[$field]->get('after');
+                $prevValueType = $prevFields[$field]->get('after_type');
             }
 
             try {
@@ -139,6 +153,8 @@ class DeltaManager {
             $deltaField = $this->modx->newObject(\vxDeltaField::class, [
                 'field' => $field,
                 'field_type' => $fieldType,
+                'before_type' => $prevValueType,
+                'after_type' => $valueType,
                 'before' => $prevValue,
                 'after' => $value,
                 'diff' => $renderedDiff, // Not persisted. Kept on object until cached.
