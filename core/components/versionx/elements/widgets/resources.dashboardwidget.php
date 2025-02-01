@@ -28,9 +28,8 @@ class vxResourceHistoryWidget extends modDashboardWidgetInterface
             <script type="text/javascript" src="{$vxUrl}js/mgr/window.deltas.js" ></script>
             <script type="text/javascript" src="{$vxUrl}js/mgr/grid.objects.js" ></script>
             <script type="text/javascript" src="{$vxUrl}js/mgr/widgets/resources.widget.js" ></script>
-            <script type="text/javascript" src="{$vxUrl}js/mgr/index.js" ></script>
             <script type="text/javascript" >
-            Ext.onReady(function() {
+            MODx.on('ready', function() {
                 {$langs}
                 VersionX.config = {$this->modx->toJSON($versionx->config)};
                 MODx.load({
