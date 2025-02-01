@@ -33,7 +33,7 @@ if ($object->xpdo) {
             // Set to fatal errors only while updating database, to avoid false positives displayed.
             $modx->setLogLevel(modX::LOG_LEVEL_FATAL);
 
-            // VersionX 3.1.1
+            // VersionX 3.1.3
             // These fields are added to keep track of data types to be used when reverting
             $manager->addField('vxDeltaField', 'before_type', ['after' => 'field_type']);
             $manager->addField('vxDeltaField', 'after_type', ['after' => 'before_type']);

@@ -1,3 +1,13 @@
+VersionX 3.1.3-pl
+-----------------
+Released on 2025-02-01
+
+- Add before_type and after_type fields to vxDeltaField to more accurately preserve types when reverting. [#138]
+- Fix blank array being created as first element when splitting properties fields. [#138]
+- Fix null type error on some resources when running the migration script (@matdave) [#140]
+- Fix undefined this.proxy browser console error when loading dashboard widget. [b0dbb40]
+- Bump dependency nesbot/carbon from 2.66.0 to 2.72.6 [#141]
+
 VersionX 3.1.2-pl
 -----------------
 Released on 2024-08-16

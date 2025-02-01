@@ -176,6 +176,14 @@ $manager = $modx->getManager();
 foreach ($objectContainers as $oC) {
     $manager->createObjectContainer($oC);
 }
+
+// VersionX 3.1.3
+// These fields are added to keep track of data types to be used when reverting
+$modx->setLogLevel(modX::LOG_LEVEL_FATAL);
+$manager->addField('vxDeltaField', 'before_type', ['after' => 'field_type']);
+$manager->addField('vxDeltaField', 'after_type', ['after' => 'before_type']);
+$modx->setLogLevel(modX::LOG_LEVEL_ERROR);
+
 echo "Done.\n";
 
 // Refresh the cache
